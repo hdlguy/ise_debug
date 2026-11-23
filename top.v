@@ -1,5 +1,4 @@
-`timescale 1ns / 1ps
-
+//
 module top(
     input 			clkin100,
     output 			led
