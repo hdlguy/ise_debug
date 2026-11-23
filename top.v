@@ -10,25 +10,25 @@ module top(
 	wire clk;
 	assign clk = clkin100;
 	
-	reg [31:0] count=0;
-	reg[7:0] a, b, c, d;
+	reg [255:0] count=0, count_q=0;
 	wire reset;
+	reg reset_q=0;
 	always @(posedge clk) begin
-		if (reset) begin
+		reset_q <= reset;
+		if (reset_q) begin
 			count <= 0;
 		end else begin
 			count <= count + 1;
 		end
+		count_q <= count;
 		led <= count[31:24];
-		a <= count[7:0];
-		b <= count[15:8];
-		c <= count[23:16];
-		d <= count[31:24];
 	end
 	
-	wire[35:0] control0, control1;
-	icon_core icon_inst (.CONTROL0(control0), .CONTROL1(control1));
-	ila_core ila_inst (.CONTROL(control0), .CLK(clk), .DATA({a, b, c, d}), .TRIG0(a));
-	vio_core vio_inst (.CONTROL(control1), .CLK(clk), .SYNC_OUT(reset));
+	// debug
+	wire[35:0] control0, control1, control2;
+	icon_core icon_inst (.CONTROL0(control0), .CONTROL1(control1), .CONTROL2(control2));
+	ila_core  ila_inst0 (.CONTROL(control0), .CLK(clk), .DATA(count_q), .TRIG0(reset_q));
+	ila_core  ila_inst1 (.CONTROL(control1), .CLK(clk), .DATA(count_q), .TRIG0(reset_q));
+	vio_core  vio_inst  (.CONTROL(control2), .CLK(clk), .SYNC_OUT(reset));
 
 endmodule
