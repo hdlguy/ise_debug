@@ -1,11 +1,8 @@
 //
 module top(
-    input 			clkin100,
-    output 			led
+    input	wire		clkin100,
+    output 	reg[7:0]	led
 );
-
-	wire clkin100;
-	reg [7:0] led;
 	
 	wire clk;
 	assign clk = clkin100;
